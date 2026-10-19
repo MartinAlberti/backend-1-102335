@@ -1,0 +1,83 @@
+[
+  {
+    "id": 3,
+    "name": "Masaje descontracturante",
+    "description": "Sesion de masaje corporal de 60 minutos",
+    "duration": 60,
+    "price": 8000,
+    "category": "Bienestar",
+    "available": false
+  },
+  {
+    "name": "Corte de pelo premium",
+    "description": "Corte con una super tijera ",
+    "duration": 30,
+    "price": 30000,
+    "category": "Estética",
+    "available": true,
+    "id": 4
+  },
+  {
+    "name": "Corte de pelo premium",
+    "description": "Corte con una super tijera ",
+    "duration": 30,
+    "price": 30000,
+    "category": "Estética",
+    "available": true,
+    "id": 5
+  },
+  {
+    "id": 6,
+    "name": "Corte de pelo premium",
+    "description": "Corte con una super tijera ",
+    "duration": 30,
+    "price": 30000,
+    "category": "Estética",
+    "available": true
+  },
+  {
+    "id": 9,
+    "name": "Corte de pelo premium",
+    "description": "Corte con una super tijera ",
+    "duration": 30,
+    "price": 30000,
+    "category": "Estética",
+    "available": true
+  },
+  {
+    "id": 10,
+    "name": "Corte de pelo premium",
+    "description": "Corte con una super tijera ",
+    "duration": 30,
+    "price": 30000,
+    "category": "Estética",
+    "available": true
+  },
+  {
+    "id": 11,
+    "name": "Corte de pelo premium",
+    "description": "Corte con una super tijera ",
+    "duration": 30,
+    "price": 30000,
+    "category": "Estética",
+    "available": true
+  },
+  {
+    "id": 12,
+    "name": "Corte de pelo premium",
+    "description": "Corte con una super tijera ",
+    "duration": 30,
+    "price": 30000,
+    "category": "Estética",
+    "available": true
+  },
+  {
+    "id": 13,
+    "name": "Corte de pelo premium",
+    "description": "Corte con una super tijera ",
+    "duration": 30,
+    "price": 30000,
+    "category": "Estética",
+    "available": true
+  }
+]
