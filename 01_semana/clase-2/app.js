@@ -1,58 +1,78 @@
-// Esto esta Mal!
+import express from "express";
+import path from "node:path";
+import ServiceManager from "./src/Managers/servirceManager.js";
 
-// const uri = `${import.meta.dirname}/src/data/services.json`
-// import path from "node:path"
+const app = express();
 
-// const FILE_NAME = "services.json"
-// const uri = path.join(import.meta.dirname, "src", "data", FILE_NAME)
+const DATABASE_NAME = "services.json";
+const databasePath = path.join(
+  import.meta.dirname,
+  "src",
+  "data",
+  DATABASE_NAME,
+);
+const manager = new ServiceManager(databasePath);
 
-// import { readFile } from "node:fs/promises"
+// Logger
+app.use((req, res, next) => {
+  console.info(`${req.method} ${req.url}`);
+  next();
+});
+// Middleware para parseo de json
+app.use(express.json());
 
-// try{
-//     const fileData = await readFile(uri, "utf-8")
-//     console.log(fileData)
+// API health
+app.get("/api/health", (req, res) => {
+  res.status(200).json({
+    status: "success",
+    message: "API is up!",
+  });
+});
 
-// } catch(error){
-//     console.log({ error })
+// GET Services
+app.get("/api/services", async (req, res) => {
+  const services = await manager.getServices();
+  res.status(200).json({
+    status: "success",
+    payload: services,
+  });
+});
 
-// }
+// GET Service by ID
+app.get("/api/services/:id", async (req, res) => {
+  const id = req.params.id;
+  const service = await manager.getServiceById(Number(id));
+  res.status(200).json({
+    status: "success",
+    payload: service,
+  });
+});
 
+// POST new Service
+app.post("/api/services", async (req, res) => {
+  const data = req.body;
+  const result = await manager.addService(data);
+  res.status(201).json({
+    status: "success",
+    payload: result.payload,
+  });
+});
 
-// import * as manager from "./src/Managers/servirceManager.js"
+app.delete("/api/services/:id", async (req, res) => {
+  const id = req.params.id;
+  const services = await manager.deleteService(Number(id));
+  res.status(200).json({
+    status: "success",
+    message: `Servicio ${id} eliminado exitosamente`,
+  });
+});
 
-// import { getServices as managerService } from "./src/Managers/servirceManager.js"
+// Middleware que devuelve una respuesta si el recurso/endpoint consultado no existe
+app.use((req, res) => {
+  res.status(404).json({
+    status: "error",
+    message: "Ruta no encontrada",
+  });
+});
 
-
-import path from "node:path"
-import envConfig from "./src/config/env.config.js"
-import ServiceManager from "./src/Managers/servirceManager.js"
-
-const DATABASE_NAME = "services.json"
-const databasePath = path.join(import.meta.dirname, "src", "data", DATABASE_NAME)
-
-const manager = new ServiceManager(databasePath)
-
-console.log({"services": await manager.getServices()})
-console.log("\n Busqueda de servicio \n ")
-console.log({"service #2 " : await manager.getServiceById(2) })
-
-const newService ={
-    name: "Corte de pelo premium",
-    description: "Corte con una super tijera ",
-    duration: 30,
-    price: 30000,
-    category:"Estética",
-    available: true
-}
-
-console.log("\n Agregar un servicio\n ")
-const createdService = await manager.addService(newService)
-console.log("new service", createdService)
-console.log("\n Eliminar un servicio\n ")
-console.log("Deleted", await manager.deleteService(8))
-console.log(`Enviroment: ${envConfig.nodeEnv} | Port Available: ${envConfig.port}`)
-
-
-
-
-
+export default app;

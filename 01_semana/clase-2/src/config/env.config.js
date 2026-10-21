@@ -1,10 +1,14 @@
-const { PORT, NODE_ENV} = process.env
+const { PORT, NODE_ENV } = process.env;
 
-//Fail fast. Revisa si estan los datos que necesito.
+if (!PORT || !NODE_ENV)
+  throw new Error("Algunas variables faltan -> revisar el .env file");
 
-if(!PORT || !NODE_ENV) throw new Error("Algunas variables faltan -> revisar el .env file")
+const port = Number(PORT);
 
-    export default{
-        port: Number(PORT),
-        nodeEnv: NODE_ENV
-    }
+if(!Number.isInteger(port) || port > 8000) {
+    throw new Error("Puerto invalido, debe ser un numero")
+}
+export default {
+  port,
+  nodeEnv: NODE_ENV,
+};
