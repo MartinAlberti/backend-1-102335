@@ -1,0 +1,1 @@
+export const SERVICES_PATH = "/api/services"

@@ -79,14 +79,28 @@ export default class ServiceManager {
   }
 
   async updateService(idService, updatedServiceData) {
-    const searchedService = await this.getServiceById(idService);
-    if (!searchedService) {
-      return { payload: searchedService, status: "notOk" };
-    }
     const services = await this.getServices();
-    services[idService] = { ...searchedService, ...updatedServiceData };
+
+    // Buscamos la posición del servicio por su ID
+    const index = services.findIndex((service) => service.id === idService);
+
+    // Si no existe, devolvemos null
+    if (index === -1) {
+      return null;
+    }
+
+    // Evitamos que el cliente modifique el ID
+    const { id, ...fieldsToUpdate } = updatedServiceData;
+
+    // Actualizamos el servicio conservando los campos no modificados
+    services[index] = {
+      ...services[index],
+      ...fieldsToUpdate,
+    };
+
     await this.#save(services);
-    return { payload: services[idService], status: "ok" };
+
+    return services[index];
   }
 
   async deleteService(idService) {

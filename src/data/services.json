@@ -1,119 +1,92 @@
 [
   {
-    "id": 3,
+    "id": 1,
     "name": "Masaje descontracturante",
     "description": "Sesion de masaje corporal de 60 minutos",
     "duration": 60,
-    "price": 8000,
+    "price": 1500,
     "category": "Bienestar",
     "available": false
   },
   {
+    "id": 2,
     "name": "Corte de pelo premium",
-    "description": "Corte con una super tijera ",
-    "duration": 30,
-    "price": 30000,
-    "category": "Estética",
-    "available": true,
-    "id": 4
-  },
-  {
-    "name": "Corte de pelo premium",
-    "description": "Corte con una super tijera ",
-    "duration": 30,
-    "price": 30000,
-    "category": "Estética",
-    "available": true,
-    "id": 5
-  },
-  {
-    "id": 6,
-    "name": "Corte de pelo premium",
-    "description": "Corte con una super tijera ",
+    "description": "Corte con una super tijera",
     "duration": 30,
     "price": 30000,
     "category": "Estética",
     "available": true
   },
   {
-    "id": 9,
-    "name": "Corte de pelo premium",
-    "description": "Corte con una super tijera ",
+    "id": 3,
+    "name": "Corte de pelo clásico",
+    "description": "Corte de pelo tradicional para hombre",
     "duration": 30,
-    "price": 30000,
+    "price": 12000,
+    "category": "Estética",
+    "available": true
+  },
+  {
+    "id": 4,
+    "name": "Masaje relajante",
+    "description": "Masaje corporal para aliviar el estrés",
+    "duration": 45,
+    "price": 10000,
+    "category": "Bienestar",
+    "available": true
+  },
+  {
+    "id": 5,
+    "name": "Manicura completa",
+    "description": "Limpieza, limado y esmaltado de uñas",
+    "duration": 40,
+    "price": 8000,
+    "category": "Estética",
+    "available": true
+  },
+  {
+    "id": 6,
+    "name": "Pedicura",
+    "description": "Tratamiento estético y cuidado de los pies",
+    "duration": 50,
+    "price": 10000,
+    "category": "Estética",
+    "available": true
+  },
+  {
+    "id": 7,
+    "name": "Limpieza facial",
+    "description": "Limpieza profunda e hidratación facial",
+    "duration": 60,
+    "price": 15000,
+    "category": "Belleza",
+    "available": true
+  },
+  {
+    "id": 8,
+    "name": "Masaje con piedras calientes",
+    "description": "Masaje relajante con piedras calientes",
+    "duration": 60,
+    "price": 18000,
+    "category": "Bienestar",
+    "available": false
+  },
+  {
+    "id": 9,
+    "name": "Corte de pelo infantil",
+    "description": "Corte de pelo para niños",
+    "duration": 20,
+    "price": 8000,
     "category": "Estética",
     "available": true
   },
   {
     "id": 10,
-    "name": "Corte de pelo premium",
-    "description": "Corte con una super tijera ",
-    "duration": 30,
-    "price": 30000,
-    "category": "Estética",
-    "available": true
-  },
-  {
-    "id": 11,
-    "name": "Corte de pelo premium",
-    "description": "Corte con una super tijera ",
-    "duration": 30,
-    "price": 30000,
-    "category": "Estética",
-    "available": true
-  },
-  {
-    "id": 12,
-    "name": "Corte de pelo premium",
-    "description": "Corte con una super tijera ",
-    "duration": 30,
-    "price": 30000,
-    "category": "Estética",
-    "available": true
-  },
-  {
-    "id": 13,
-    "name": "Corte de pelo premium",
-    "description": "Corte con una super tijera ",
-    "duration": 30,
-    "price": 30000,
-    "category": "Estética",
-    "available": true
-  },
-  {
-    "id": 14,
-    "name": "Corte de pelo premium",
-    "description": "Corte con una super tijera ",
-    "duration": 30,
-    "price": 30000,
-    "category": "Estética",
-    "available": true
-  },
-  {
-    "id": 15,
-    "name": "Corte de pelo premium",
-    "description": "Corte con una super tijera ",
-    "duration": 30,
-    "price": 30000,
-    "category": "Estética",
-    "available": true
-  },
-  {
-    "id": 16,
-    "name": "Corte de pelo premium",
-    "description": "Corte con una super tijera ",
-    "duration": 30,
-    "price": 30000,
-    "category": "Estética",
-    "available": true
-  },
-  {
-    "id": 18,
     "name": "Masaje ultra descontracturante",
-    "description": "Masaje ultra descontracturante para todos los del curso de coder",
+    "description": "Masaje ultra descontracturante para todos los del curso de Coder",
     "duration": 60,
     "price": 12000,
-    "category": "bienestar",
+    "category": "Bienestar",
     "available": true
   }
 ]
