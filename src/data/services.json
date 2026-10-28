@@ -88,5 +88,14 @@
     "price": 12000,
     "category": "Bienestar",
     "available": true
+  },
+  {
+    "id": 11,
+    "name": "test",
+    "description": "Sesion de masaje corporal de 60 minutos",
+    "duration": 60,
+    "price": 1500,
+    "category": "Bienestar",
+    "available": false
   }
 ]

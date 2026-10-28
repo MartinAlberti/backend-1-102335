@@ -44,7 +44,7 @@ router.get("/:sid", async (req, res) => {
   try {
     const service = await manager.getServiceById(id);
     if (!service) {
-      res.status(404).json({
+      return res.status(404).json({
         status: RESPONSES_STATUS.NOT_FOUND,
         message: "Servicio no encontrador",
       });
@@ -64,44 +64,44 @@ router.get("/:sid", async (req, res) => {
 
 // crear el servicio
 
-router.post("/", async (req, res) => {
-   try {
-    const newService = await manager.addService(req.body);
-    res.status(201).json({
-      status: RESPONSES_STATUS.SUCCESS,
-      payload: newService,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      status: RESPONSES_STATUS.ERROR,
-      message: "Error al crear el servicio.",
-    });
-  }
-});
-
 // router.post("/", async (req, res) => {
-//   try {
+//    try {
 //     const newService = await manager.addService(req.body);
-
-//     return res.status(201).json({
-//       status: "success",
-//       payload: newService
+//     res.status(201).json({
+//       status: RESPONSES_STATUS.SUCCESS,
+//       payload: newService,
 //     });
 //   } catch (error) {
-//     if (error.code === "VALIDATION_ERROR") {
-//       return res.status(400).json({
-//         status: "bad_request",
-//         message: error.message
-//       });
-//     }
-
-//     return res.status(500).json({
-//       status: "error",
-//       message: "Error interno del servidor"
+//     console.error(error);
+//     res.status(500).json({
+//       status: RESPONSES_STATUS.ERROR,
+//       message: "Error al crear el servicio.",
 //     });
 //   }
 // });
+
+router.post("/", async (req, res) => {
+  try {
+    const newService = await manager.addService(req.body);
+
+    return res.status(201).json({
+      status: "success",
+      payload: newService
+    });
+  } catch (error) {
+    if (error.code === "VALIDATION_ERROR") {
+      return res.status(400).json({
+        status: "bad_request",
+        message: error.message
+      });
+    }
+
+    return res.status(500).json({
+      status: "error",
+      message: "Error interno del servidor"
+    });
+  }
+});
 
 // Actualizar un servicio por su ID
 
