@@ -1,5 +1,5 @@
 import path from "node:path";
-import ServiceManager from "../Managers/servicesManager.js";
+import ServiceManager from "../managers/servicesManager.js";
 import { RESPONSES_STATUS } from "../constants/resStatus.js";
 
 const DATABASE_NAME = "services.json";
@@ -72,6 +72,42 @@ const createService = async (req, res) => {
     });
   }
 };
+const updateService =  async (req, res) => {
+  // Obtenemos el ID desde los parámetros de la URL
+  const id = Number(req.params.sid);
+
+  // Validamos que el ID sea un número entero positivo
+  if (!Number.isInteger(id) || id <= 0) {
+    return res.status(400).json({
+      status: RESPONSES_STATUS.BAD_REQUEST,
+      message: "El ID es inválido",
+    });
+  }
+
+  try {
+    const updatedService = await manager.updateService(id, req.body);
+
+    if (!updatedService) {
+      return res.status(404).json({
+        status: RESPONSES_STATUS.NOT_FOUND,
+        message: "Servicio no encontrado",
+      });
+    }
+
+    return res.status(200).json({
+      status: RESPONSES_STATUS.SUCCESS,
+      message: "Servicio actualizado correctamente",
+      payload: updatedService,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      status: RESPONSES_STATUS.ERROR,
+      message: "Error al actualizar el servicio.",
+    });
+  }
+}
 
 const deleteService = async (req, res) => {
   const id = Number(req.params.id);
@@ -97,4 +133,4 @@ const deleteService = async (req, res) => {
   }
 };
 
-export { getServices, getServiceById, createService, deleteService };
+export { getServices, getServiceById, createService, updateService, deleteService };

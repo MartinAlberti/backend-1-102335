@@ -1,6 +1,9 @@
 import express from "express";
 import serviceRouter from "./src/routes/services.router.js"
+import bookingsRouter from "./src/routes/bookings.router.js"
+
 import { SERVICES_PATH } from "./src/config/paths.config.js";
+import { BOOKINGS_PATH } from "./src/config/paths.config.js";
 
 const app = express();
 
@@ -24,6 +27,8 @@ app.get("/api/health", (req, res) => {
 
 //Routers
 app.use(SERVICES_PATH, serviceRouter)
+app.use(BOOKINGS_PATH, bookingsRouter)
+
 
 // Middleware que devuelve una respuesta si el recurso/endpoint consultado no existe
 app.use((req, res) => {

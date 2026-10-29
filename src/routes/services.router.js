@@ -5,6 +5,7 @@ import {
   deleteService,
   getServiceById,
   getServices,
+  updateService
 } from "../controllers/services.controller.js";
 // Services
 
@@ -16,6 +17,9 @@ router.get("", getServices);
 router.get("/:id", getServiceById);
 //POST "/api/services"
 router.post("", createService);
+//PUT "/api/services/_ID"
+
+router.put("/:sid",updateService);
 //DELETE "/api/services/:id"
 router.delete("/:id", deleteService);
 
