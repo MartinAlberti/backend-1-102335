@@ -53,6 +53,34 @@ export default class ServiceManager {
         throw invalid(`Falta el dato: ${field}`);
       }
     }
+
+    //Validamos los campos de texto.
+    const textFields = ["name", "description", "category"];
+
+    for (const field of textFields) {
+      if (typeof data[field] !== "string" || !data[field].trim()) {
+        throw invalid(`El campo ${field} debe ser un texto válido`);
+      }
+    }
+
+    //La duracion debe ser un nimero entero positivo
+    if (!Number.isInteger(data.duration) || data.duration <= 0) {
+      throw invalid(`La duracion debe ser un entero positivo`);
+    }
+
+    //El precio debe ser un numero mayor a 0
+    if (
+      typeof data.price !== "number" ||
+      !Number.isFinite(data.price) ||
+      data.price <= 0
+    ) {
+      throw invalid(`El precio debe ser un numero entero positivo`);
+    }
+
+    //Asegurarse de que available sea booleano
+    if (typeof data.available !== "boolean") {
+      throw invalid(`Available debe ser true o false`);
+    }
   }
 
   async addService(serviceData) {
@@ -88,35 +116,65 @@ export default class ServiceManager {
       return null;
     }
 
-    // Evitamos que el cliente modifique el ID
-    const { id, ...fieldsToUpdate } = updatedServiceData;
+    //Creamos un objeto unicamente con los campos permitidos.
+    const fieldsToUpdate = {};
 
-    // Actualizamos el servicio conservando los campos no modificados
-    services[index] = {
+    for (const field of REQUIRED_FIELDS) {
+      if (updatedServiceData[field] !== undefined) {
+        //Me falto updatedServiceData[field]
+        fieldsToUpdate[field] = updatedServiceData[field];
+      }
+    }
+
+    //Combinamos el servicio original con los campos enviados.
+    //Todavia no modificamos el erray
+    const updatedService = {
       ...services[index],
       ...fieldsToUpdate,
     };
-
+    this.validate(updatedService);
+    services[index] = updatedService;
     await this.#save(services);
 
-    return services[index];
+    return updatedService;
   }
-
   async deleteService(idService) {
     const services = await this.getServices();
-    const filteredServices = services.filter(
-      (service) => service.id !== idService,
-    );
-    if (services.length === filteredServices.length)
+    const index = services.findIndex((service) => service.id === idService);
+
+    if (index === -1) {
       return {
         payload: idService,
         status: "notOk",
-        message: "notFoundService",
+        message: "serviceNotFound",
       };
-    this.#save(filteredServices);
+    }
+    //Eliminamos el servicio
+
+    const [deletedService] = services.splice(index, 1);
+
+    await this.#save(services);
     return {
-      payload: idService,
+      payload: deletedService,
       status: "Ok",
     };
   }
+
+  // async deleteService(idService) {
+  //   const services = await this.getServices();
+  //   const filteredServices = services.filter(
+  //     (service) => service.id !== idService,
+  //   );
+  //   if (services.length === filteredServices.length)
+  //     return {
+  //       payload: idService,
+  //       status: "notOk",
+  //       message: "notFoundService",
+  //     };
+  //   this.#save(filteredServices);
+  //   return {
+  //     payload: idService,
+  //     status: "Ok",
+  //   };
+  // }
 }

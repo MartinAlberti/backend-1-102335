@@ -22,7 +22,7 @@ const servicesDatabasePath = path.join(
 );
 
 const serviceManager = new ServiceManager(servicesDatabasePath);
-const manager = new BookingManager(bookingsDatabasePath, servicesDatabasePath);
+const manager = new BookingManager(bookingsDatabasePath, serviceManager);
 
 const router = new Router();
 
@@ -53,7 +53,7 @@ router.get("/:bid", async (req, res) => {
   try {
     const booking = await manager.getBookingById(id);
     if (!booking) {
-      return res.status(400).json({
+      return res.status(404).json({
         status: RESPONSES_STATUS.NOT_FOUND,
         message: "Reserva no encontrada",
       });
@@ -108,10 +108,10 @@ router.post("/:bid/services/:sid", async (req, res) => {
     });
   }
   try {
-    const updatedBooking = await manager.addServiceToBooking({
+    const updatedBooking = await manager.addServiceToBooking(
       bookingId,
       serviceId,
-    });
+    );
     return res.status(200).json({
       status: RESPONSES_STATUS.SUCCESS,
       message: "Servicio agregado a la reserva correctamente",
@@ -123,7 +123,7 @@ router.post("/:bid/services/:sid", async (req, res) => {
       error.code === "SERVICE_NOT_FOUND"
     ) {
       return res.status(404).json({
-        status: RESPONSES_STATUS.BAD_REQUEST,
+        status: RESPONSES_STATUS.NOT_FOUND,
         message: error.message,
       });
     }
@@ -135,4 +135,4 @@ router.post("/:bid/services/:sid", async (req, res) => {
   }
 });
 
-export default router
+export default router;

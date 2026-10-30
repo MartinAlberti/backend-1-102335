@@ -60,11 +60,17 @@ const getServiceById = async (req, res) => {
 const createService = async (req, res) => {
   try {
     const newService = await manager.addService(req.body);
-    res.status(201).json({
+    return res.status(201).json({
       status: RESPONSES_STATUS.SUCCESS,
-      payload: newService,
+      payload: newService.payload,
     });
   } catch (error) {
+    if (error.code === "VALIDATION_ERROR") {
+      return res.status(400).json({
+        status: RESPONSES_STATUS.BAD_REQUEST,
+        message: error.message,
+      });
+    }
     console.error(error);
     res.status(500).json({
       status: RESPONSES_STATUS.ERROR,
@@ -72,7 +78,7 @@ const createService = async (req, res) => {
     });
   }
 };
-const updateService =  async (req, res) => {
+const updateService = async (req, res) => {
   // Obtenemos el ID desde los parámetros de la URL
   const id = Number(req.params.sid);
 
@@ -100,6 +106,12 @@ const updateService =  async (req, res) => {
       payload: updatedService,
     });
   } catch (error) {
+    if (error.code === "VALIDATION_ERROR") {
+      return res.status(400).json({
+        status: RESPONSES_STATUS.BAD_REQUEST,
+        message: error.message,
+      });
+    }
     console.error(error);
 
     return res.status(500).json({
@@ -107,7 +119,7 @@ const updateService =  async (req, res) => {
       message: "Error al actualizar el servicio.",
     });
   }
-}
+};
 
 const deleteService = async (req, res) => {
   const id = Number(req.params.id);
@@ -119,11 +131,17 @@ const deleteService = async (req, res) => {
   }
 
   try {
-    await manager.deleteService(id);
-    res.status(200).json({
-      status: RESPONSES_STATUS.SUCCESS,
-      message: `El servicio con id ${id} se elimino correctamente`,
+    const deletedService = await manager.deleteService(id);
+    if(deletedService.status === "notOk")
+    return res.status(404).json({
+      status: RESPONSES_STATUS.NOT_FOUND,
+      message: `Servicio no encontrado`,
     });
+
+    return res.status(200).json({
+      status: RESPONSES_STATUS.SUCCESS,
+      message: `El servicio con id ${id} se elimino correctamente`
+    })
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -133,4 +151,10 @@ const deleteService = async (req, res) => {
   }
 };
 
-export { getServices, getServiceById, createService, updateService, deleteService };
+export {
+  getServices,
+  getServiceById,
+  createService,
+  updateService,
+  deleteService,
+};

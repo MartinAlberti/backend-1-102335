@@ -102,7 +102,12 @@ export default class BookingManager {
     if (!booking) {
       throw notFound("Reserva no encontrada", "BOOKING_NOT_FOUND");
     }
-    const bookingService = booking.service.find(
+
+    const service = await this.servicesManager.getServiceById(serviceId)
+    if(!service){
+      throw notFound("Servicio no encontrado", "SERVICE_NOT_FOUND");
+    }
+    const bookingService = booking.services.find(
       (item) => item.service === serviceId,
     );
 
