@@ -35,6 +35,7 @@ export default class ServiceManager {
       throw error;
     }
   }
+  
   async getServiceById(idService) {
     try {
       const data = await this.getServices();

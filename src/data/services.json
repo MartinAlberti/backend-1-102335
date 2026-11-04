@@ -115,5 +115,23 @@
     "price": 12000,
     "category": "bienestar",
     "available": true
+  },
+  {
+    "id": 19,
+    "name": "Masaje ultra descontracturante",
+    "description": "Masaje ultra descontracturante para todos los del curso de coder",
+    "duration": 60,
+    "price": 12000,
+    "category": "bienestar",
+    "available": true
+  },
+  {
+    "id": 20,
+    "name": "Masaje ultra descontracturante",
+    "description": "Masaje ultra descontracturante para todos los del curso de coder",
+    "duration": 60,
+    "price": 12000,
+    "category": "bienestar",
+    "available": true
   }
 ]

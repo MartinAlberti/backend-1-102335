@@ -41,7 +41,7 @@ const getServiceById = async (req, res) => {
     if (!service) {
       res.status(404).json({
         status: RESPONSES_STATUS.NOT_FOUND,
-        message: "Servicio no encontrador",
+        message: "Servicio no encontrado",
       });
     }
     res.status(200).json({

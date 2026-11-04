@@ -23,7 +23,10 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+// Middlware que valide el rol usuario (ADMIN/CLIENTE)
+
 //Routers
+// Si es ADMIN accede a todo, sino accede al que le corresponde
 app.use(SERVICES_PATH, serviceRouter)
 app.use(BOOKINGS_PATH, bookingRouter)
 
