@@ -3,7 +3,8 @@ const RESPONSES_STATUS = {
     NOT_FOUND: 'not_found',
     DELETED: 'deleted',
     BAD_REQUEST: 'bad_request',
-    ERROR: 'error'
+    ERROR: 'error',
+    CREATED: 'created'
 }
 
 export {

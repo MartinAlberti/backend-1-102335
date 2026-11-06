@@ -1,15 +1,5 @@
-import path from "node:path";
-import ServiceManager from "../Managers/servicesManager.js";
+import { servicesService as manager } from "../config/dependencies.js";
 import { RESPONSES_STATUS } from "../constants/resStatus.js";
-
-const DATABASE_NAME = "services.json";
-const databasePath = path.join(
-  import.meta.dirname,
-  "..",
-  "data",
-  DATABASE_NAME,
-);
-const manager = new ServiceManager(databasePath);
 
 //Async/Await al codigo bloqueante en Javascript
 const getServices = async (req, res) => {
@@ -39,7 +29,7 @@ const getServiceById = async (req, res) => {
   try {
     const service = await manager.getServiceById(id);
     if (!service) {
-      res.status(404).json({
+      return res.status(404).json({
         status: RESPONSES_STATUS.NOT_FOUND,
         message: "Servicio no encontrado",
       });

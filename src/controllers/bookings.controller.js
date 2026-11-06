@@ -1,23 +1,6 @@
-import path from "node:path";
-import BookingManager from "../Managers/bookingsManager.js";
-import ServiceManager from "../Managers/servicesManager.js";
-import { RESPONSES_STATUS } from "../constants/resStatus.js";
+import { bookingsService as manager, servicesService as serviceManager } from "../config/dependencies.js";
 
-const DATABASE_NAME = "bookings.json";
-const databasePath = path.join(
-  import.meta.dirname,
-  "..",
-  "data",
-  DATABASE_NAME,
-);
-const servicesPath = path.join(
-  import.meta.dirname,
-  "..",
-  "data",
-  "services.json",
-);
-const manager = new BookingManager(databasePath);
-const serviceManager = new ServiceManager(servicesPath);
+import { RESPONSES_STATUS } from "../constants/resStatus.js";
 
 const createBooking = async (req, res) => {
   const user = req.body?.user;
