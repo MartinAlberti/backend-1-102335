@@ -133,5 +133,14 @@
     "price": 12000,
     "category": "bienestar",
     "available": true
+  },
+  {
+    "name": "test",
+    "description": "Test",
+    "duration": 60,
+    "price": 5000,
+    "category": "Bienestar",
+    "available": false,
+    "id": 1
   }
 ]
