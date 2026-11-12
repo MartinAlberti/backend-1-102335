@@ -23,14 +23,20 @@ export default class ServicesService {
     this.repository = repository;
   }
 
-  #validate(data) {
+  #validate(data, partial = false) {
     if (!data || typeof data !== "object") {
       throw invalid("La data tiene que ser un objeto JSON");
     }
-    for (const field of REQUIRED_FIELDS) {
-      if (data[field] === undefined || data[field] === null) {
-        throw invalid(`Falta el dato: ${field}`);
+
+    if (!partial) {
+      for (const field of REQUIRED_FIELDS) {
+        if (data[field] === undefined || data[field] === null) {
+          throw invalid(`Falta el dato: ${field}`);
+        }
       }
+    }
+    if (data.available !== undefined && typeof data.available !== "boolean") {
+      throw invalid("Available debe ser true o false");
     }
   }
 
@@ -54,6 +60,23 @@ export default class ServicesService {
       available,
     });
     return { payload: service, status: RESPONSES_STATUS.CREATED };
+  }
+
+  async updateService(id, data) {
+    this.#validate(data, true);
+    const updatedData = {};
+    for (const field of REQUIRED_FIELDS) {
+      if (data[field] !== undefined) updatedData[field] = data[field];
+    }
+
+    const service = await this.repository.update(id, updatedData);
+    if (!service) {
+      return {
+        status: RESPONSES_STATUS.NOT_FOUND,
+        message: "Servicio no encontrado",
+      };
+    }
+    return { status: RESPONSES_STATUS.SUCCESS, payload: service };
   }
 
   async delete(id) {
