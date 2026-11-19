@@ -1,6 +1,7 @@
 import { Router } from "express";
 // Controllers
 import {
+  updateService,
   createService,
   deleteService,
   getServiceById,
@@ -18,5 +19,7 @@ router.get("/:id", getServiceById);
 router.post("", createService);
 //DELETE "/api/services/:id"
 router.delete("/:id", deleteService);
+
+router.put("/:id", updateService);
 
 export default router;

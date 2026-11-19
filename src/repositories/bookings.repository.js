@@ -3,6 +3,14 @@ export default class BookingsRepository {
     this.dao = dao;
   }
 
+  getAll() {
+    return this.dao.getAll();
+  }
+
+  delete(id) {
+    return this.dao.delete(id);
+  }
+
   getById(id) {
     return this.dao.getById(id);
   }

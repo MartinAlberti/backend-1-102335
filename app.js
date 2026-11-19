@@ -1,10 +1,12 @@
 import express from "express";
-import serviceRouter from "./src/routes/services.router.js"
+import serviceRouter from "./src/routes/services.router.js";
 import bookingRouter from "./src/routes/bookings.router.js";
 import { BOOKINGS_PATH, SERVICES_PATH } from "./src/config/paths.config.js";
+import path from "node:path";
+import { engine } from "express-handlebars";
+import viewsRouter from "./src/routes/views.router.js";
 
 const app = express();
-
 
 // Logger - userId - permiso del user
 app.use((req, res, next) => {
@@ -14,6 +16,12 @@ app.use((req, res, next) => {
 
 // Middleware para parseo de json
 app.use(express.json());
+
+// Router para handlebars
+app.engine("handlebars", engine({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
+app.set("views", path.join(import.meta.dirname, "src", "views"));
+app.use(express.static(path.join(import.meta.dirname, "src", "public")));
 
 // API health
 app.get("/api/health", (req, res) => {
@@ -27,8 +35,9 @@ app.get("/api/health", (req, res) => {
 
 //Routers
 // Si es ADMIN accede a todo, sino accede al que le corresponde
-app.use(SERVICES_PATH, serviceRouter)
-app.use(BOOKINGS_PATH, bookingRouter)
+app.use("/", viewsRouter);
+app.use(SERVICES_PATH, serviceRouter);
+app.use(BOOKINGS_PATH, bookingRouter);
 
 // Middleware que devuelve una respuesta si el recurso/endpoint consultado no existe
 app.use((req, res) => {

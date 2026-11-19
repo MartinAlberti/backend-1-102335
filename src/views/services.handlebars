@@ -1,0 +1,11 @@
+<h1>Servicios</h1>
+<div class="services-container">{{#each services}}
+    <article>
+      <h2><a href="/services/{{_id}}">{{name}}</a></h2>
+      <p>Descripcion: {{description}}</p>
+      <p>Duracion: {{duration}} minutos</p>
+      <p>Precio: ${{price}}</p>
+      <p>Categoría: {{category}}</p>
+      <p>Disponible: {{#if available}} Si {{else}} No {{/if}}</p>
+    </article>
+  {{/each}}</div>

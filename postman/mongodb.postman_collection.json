@@ -1,0 +1,308 @@
+{
+  "info": {
+    "name": "Backend - MongoDB localhost",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Configurar MONGODB_URI y ejecutar npm run dev. Ejecutar en orden: las creaciones guardan los ObjectIds. La fecha pertenece a la reserva, no al servicio asociado."
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "serviceId",
+      "value": ""
+    },
+    {
+      "key": "bookingId",
+      "value": ""
+    },
+    {
+      "key": "messageId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "1 - Crear servicio",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/services",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Consulta general\",\n  \"description\": \"Consulta inicial\",\n  \"duration\": 30,\n  \"price\": 12000,\n  \"category\": \"salud\",\n  \"available\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 201) pm.collectionVariables.set(\"serviceId\", pm.response.json().payload._id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2 - Listar servicios",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/services"
+      }
+    },
+    {
+      "name": "3 - Actualizar servicio",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/services/{{serviceId}}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"price\": 15000\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "4 - Crear reserva",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/bookings",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"clientName\": \"Ana Perez\",\n  \"clientEmail\": \"ana@example.com\",\n  \"date\": \"2026-12-01\",\n  \"time\": \"15:00\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 201) pm.collectionVariables.set(\"bookingId\", pm.response.json().payload._id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "5 - Agregar servicio (repetir aumenta cantidad)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": "{{baseUrl}}/api/bookings/{{bookingId}}/services/{{serviceId}}"
+      }
+    },
+    {
+      "name": "6 - Consultar reserva",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/bookings/{{bookingId}}"
+      }
+    },
+    {
+      "name": "7 - Confirmar reserva",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/bookings/{{bookingId}}/status",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"confirmed\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "8 - Cancelar reserva",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/bookings/{{bookingId}}/status",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"cancelled\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "9 - Estado invalido (400)",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/bookings/{{bookingId}}/status",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"other\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "10 - Listar reservas",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/bookings"
+      }
+    },
+    {
+      "name": "11 - Quitar servicio completo de reserva",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "{{baseUrl}}/api/bookings/{{bookingId}}/services/{{serviceId}}"
+      }
+    },
+    {
+      "name": "12 - Crear mensaje",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/messages",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"user\": \"Ana\",\n  \"message\": \"Consulta sobre mi reserva\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 201) pm.collectionVariables.set(\"messageId\", pm.response.json().payload._id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "13 - Listar mensajes",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/messages"
+      }
+    },
+    {
+      "name": "14 - Consultar mensaje",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/messages/{{messageId}}"
+      }
+    },
+    {
+      "name": "15 - Actualizar mensaje",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/messages/{{messageId}}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"user\": \"Ana\",\n  \"message\": \"Consulta actualizada\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "16 - Eliminar mensaje de prueba",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "{{baseUrl}}/api/messages/{{messageId}}"
+      }
+    },
+    {
+      "name": "17 - Eliminar reserva de prueba",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "{{baseUrl}}/api/bookings/{{bookingId}}"
+      }
+    }
+  ]
+}

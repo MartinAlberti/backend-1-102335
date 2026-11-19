@@ -1,22 +1,25 @@
-import { bookingsService as manager, servicesService as serviceManager } from "../config/dependencies.js";
+import mongoose from "mongoose";
+
+import { bookingsService as manager } from "../config/dependencies.js";
 
 import { RESPONSES_STATUS } from "../constants/resStatus.js";
 
 const createBooking = async (req, res) => {
-  const user = req.body?.user;
-  if (!Number.isInteger(user) || user <= 0) {
-    return res.status(400).json({
-      status: RESPONSES_STATUS.BAD_REQUEST,
-      message: "El user debe ser un ID numerico positivo",
-    });
-  }
   try {
-    const booking = await manager.createBooking(user);
+    const booking = await manager.createBooking(req.body);
     res.status(201).json({
       status: RESPONSES_STATUS.SUCCESS,
       payload: booking,
     });
   } catch (error) {
+    if (error.code === "NOT_FOUND") {
+      return res.status(404).json({ status: RESPONSES_STATUS.NOT_FOUND, message: error.message });
+    }
+    if (error.code === "VALIDATION_ERROR" || error.name === "ValidationError" || error.name === "CastError") {
+      return res
+        .status(400)
+        .json({ status: RESPONSES_STATUS.BAD_REQUEST, message: error.message });
+    }
     console.error(error);
     res.status(500).json({
       status: RESPONSES_STATUS.ERROR,
@@ -26,12 +29,11 @@ const createBooking = async (req, res) => {
 };
 
 const getBookingById = async (req, res) => {
-  const id = Number(req.params.bid);
-  if (!Number.isInteger(id) || id <= 0) {
-    return res.status(400).json({
-      status: RESPONSES_STATUS.BAD_REQUEST,
-      message: "El ID es invalido",
-    });
+  const id = req.params.bid;
+  if (!mongoose.isObjectIdOrHexString(id)) {
+    return res
+      .status(400)
+      .json({ status: RESPONSES_STATUS.BAD_REQUEST, message: "ID invalido" });
   }
   try {
     const booking = await manager.getBookingById(id);
@@ -55,49 +57,14 @@ const getBookingById = async (req, res) => {
 };
 
 const addServiceToBooking = async (req, res) => {
-  const bid = Number(req.params.bid);
-  const sid = Number(req.params.sid);
-  if (
-    !Number.isInteger(bid) ||
-    bid <= 0 ||
-    !Number.isInteger(sid) ||
-    sid <= 0
-  ) {
-    return res.status(400).json({
-      status: RESPONSES_STATUS.BAD_REQUEST,
-      message: "Los IDs son invalidos",
-    });
+  const { bid, sid } = req.params;
+  if (!mongoose.isObjectIdOrHexString(bid) || !mongoose.isObjectIdOrHexString(sid)) {
+    return res
+      .status(400)
+      .json({ status: RESPONSES_STATUS.BAD_REQUEST, message: "ID invalido" });
   }
-
-  const date = req.body?.date;
-  // Fecha y hora ISO con zona horaria, por ejemplo: 2026-11-10T15:00:00-03:00
-  if (
-    typeof date !== "string" ||
-    !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,3})?(Z|[+-]\d{2}:\d{2})$/.test(
-      date,
-    ) ||
-    !Number.isFinite(Date.parse(date))
-  ) {
-    return res.status(400).json({
-      status: RESPONSES_STATUS.BAD_REQUEST,
-      message: "La fecha debe incluir fecha, hora y zona horaria ISO",
-    });
-  }
-
   try {
-    const service = await serviceManager.getServiceById(sid);
-    if (!service) {
-      return res.status(404).json({
-        status: RESPONSES_STATUS.NOT_FOUND,
-        message: "Servicio no encontrado",
-      });
-    }
-    // Unificamos la fecha para comparar tambien horarios con distintas zonas.
-    const booking = await manager.addServiceToBooking(
-      bid,
-      sid,
-      new Date(date).toISOString(),
-    );
+    const booking = await manager.addServiceToBooking(bid, sid);
     if (!booking) {
       return res.status(404).json({
         status: RESPONSES_STATUS.NOT_FOUND,
@@ -109,6 +76,14 @@ const addServiceToBooking = async (req, res) => {
       payload: booking,
     });
   } catch (error) {
+    if (error.code === "NOT_FOUND") {
+      return res.status(404).json({ status: RESPONSES_STATUS.NOT_FOUND, message: error.message });
+    }
+    if (error.code === "VALIDATION_ERROR" || error.name === "ValidationError" || error.name === "CastError") {
+      return res
+        .status(400)
+        .json({ status: RESPONSES_STATUS.BAD_REQUEST, message: error.message });
+    }
     console.error(error);
     res.status(500).json({
       status: RESPONSES_STATUS.ERROR,
@@ -117,4 +92,71 @@ const addServiceToBooking = async (req, res) => {
   }
 };
 
-export { createBooking, getBookingById, addServiceToBooking };
+const updateBookingStatus = async (req, res) => {
+  const id = req.params.bid;
+  if (!mongoose.isObjectIdOrHexString(id)) {
+    return res.status(400).json({ status: RESPONSES_STATUS.BAD_REQUEST, message: "ID invalido" });
+  }
+  try {
+    const booking = await manager.updateBookingStatus(id, req.body?.status);
+    if (!booking) {
+      return res.status(404).json({ status: RESPONSES_STATUS.NOT_FOUND, message: "Reserva no encontrada" });
+    }
+    res.status(200).json({ status: RESPONSES_STATUS.SUCCESS, payload: booking });
+  } catch (error) {
+    if (error.code === "VALIDATION_ERROR" || error.name === "ValidationError") {
+      return res.status(400).json({ status: RESPONSES_STATUS.BAD_REQUEST, message: error.message });
+    }
+    console.error("Error al actualizar el estado de la reserva");
+    res.status(500).json({ status: RESPONSES_STATUS.ERROR, message: "Error al actualizar la reserva." });
+  }
+};
+
+const getBookings = async (req, res) => {
+  try {
+    const bookings = await manager.getBookings();
+    res.status(200).json({ status: RESPONSES_STATUS.SUCCESS, payload: bookings });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ status: RESPONSES_STATUS.ERROR, message: "Error al obtener las reservas." });
+  }
+};
+
+const deleteBooking = async (req, res) => {
+  const { bid } = req.params;
+  if (!mongoose.isObjectIdOrHexString(bid)) {
+    return res.status(400).json({ status: RESPONSES_STATUS.BAD_REQUEST, message: "ID invalido" });
+  }
+  try {
+    const booking = await manager.deleteBooking(bid);
+    if (!booking) {
+      return res.status(404).json({ status: RESPONSES_STATUS.NOT_FOUND, message: "Reserva no encontrada" });
+    }
+    res.status(200).json({ status: RESPONSES_STATUS.DELETED, payload: booking });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ status: RESPONSES_STATUS.ERROR, message: "Error al eliminar la reserva." });
+  }
+};
+
+const removeServiceFromBooking = async (req, res) => {
+  const { bid, sid } = req.params;
+  if (!mongoose.isObjectIdOrHexString(bid) || !mongoose.isObjectIdOrHexString(sid)) {
+    return res.status(400).json({ status: RESPONSES_STATUS.BAD_REQUEST, message: "IDs invalidos" });
+  }
+  try {
+    const booking = await manager.removeServiceFromBooking(bid, sid);
+    if (!booking) {
+      return res.status(404).json({ status: RESPONSES_STATUS.NOT_FOUND, message: "Reserva no encontrada" });
+    }
+    res.status(200).json({ status: RESPONSES_STATUS.SUCCESS, payload: booking });
+  } catch (error) {
+    if (error.code === "NOT_FOUND") {
+      return res.status(404).json({ status: RESPONSES_STATUS.NOT_FOUND, message: error.message });
+    }
+    console.error(error);
+    res.status(500).json({ status: RESPONSES_STATUS.ERROR, message: "Error al quitar el servicio." });
+  }
+};
+
+export { createBooking, getBookingById, addServiceToBooking, updateBookingStatus, getBookings, deleteBooking, removeServiceFromBooking };
