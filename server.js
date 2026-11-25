@@ -2,25 +2,28 @@ import mongoose from "mongoose";
 import app from "./app.js";
 import envConfig from "./src/config/env.config.js";
 import { connectDB } from "./src/config/database.config.js";
+import { createServer } from "node:http";
+import { Server } from "socket.io";
+import { configureSockets } from "./src/config/socket.config.js";
 
 const startServer = async () => {
   try {
-    //Primero conectamos la base de datos.
     await connectDB();
-
-    //Si la conexion funciona, levantamos el servidor
-    const server = app.listen(envConfig.port, () => {
-      console.log(
-        `La API esta utilizando la URL: http://localhost:${envConfig.port}`,
-      );
+    const httpServer = createServer(app);
+    const io = new Server(httpServer);
+    app.set("io", io);
+    configureSockets(io);
+    httpServer.listen(envConfig.port, () => {
+      console.log(`Servidor en http://localhost:${envConfig.port}`);
     });
-    server.on("error", async () => {
-      console.error("No se pudo abrir el puerto HTTP. Revisar PORT o si esta ocupado.");
+    httpServer.on("error", async () => {
+      console.error(`No se pudo abrir el puerto ${envConfig.port}`);
+      io.close();
       await mongoose.disconnect();
       process.exitCode = 1;
     });
   } catch (error) {
-    console.error("No se pudo iniciar el servidor. Revisar la configuracion y el acceso a MongoDB.");
+    console.error("No se pudo inicar el servidor, revisa mongodb y el entorno");
     process.exitCode = 1;
   }
 };

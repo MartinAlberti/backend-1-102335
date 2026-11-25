@@ -1,0 +1,8 @@
+<h1>Reservas</h1>
+{{#each bookings}}
+  <div>
+    <h2><a href="/bookings/{{_id}}">{{clientName}}</a></h2>
+  </div>
+{{else}}
+  <p>No hay reservas cargadas aun.</p>
+{{/each}}
